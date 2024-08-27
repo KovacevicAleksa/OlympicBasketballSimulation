@@ -1,6 +1,6 @@
 import { Team } from "./src/Team.js";
 import { Group } from "./src/Group.js";
-import { readJsonFile } from "./src/utils.js";
+import { readJsonFile, getRandomScore, shuffle } from "./src/utils.js";
 
 //Process and print data
 async function main() {
@@ -32,6 +32,10 @@ async function main() {
     console.error(error.message);
   }
 }
+
+//Tests
+//console.log(`${getRandomScore(true, 10)} vs ${getRandomScore(false, 0)}`);
+//console.log(shuffle([1, 2, 3, 4, 5]));
 
 // Run the main function
 main();
