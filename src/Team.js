@@ -11,4 +11,9 @@ export class Team {
     this.pointsScored = 0;
     this.pointsConceded = 0;
   }
+
+  // Dynamically calculates the point difference
+  get pointDifference() {
+    return this.pointsScored - this.pointsConceded;
+  }
 }
