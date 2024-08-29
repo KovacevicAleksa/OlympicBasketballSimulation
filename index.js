@@ -13,6 +13,7 @@ async function main() {
 
     tournament.simulateGroupStage();
     tournament.drawKnockoutStage();
+    tournament.simulateKnockoutStage();
   } catch (error) {
     console.error("Error:", error.message);
   }

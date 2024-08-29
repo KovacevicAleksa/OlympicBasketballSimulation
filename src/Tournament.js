@@ -1,6 +1,7 @@
 import { Group } from "./Group.js";
 import { Team } from "./Team.js";
 import { shuffle } from "./utils.js";
+import { Game } from "./Game.js";
 
 export class Tournament {
   constructor(groupsData) {
@@ -124,5 +125,86 @@ export class Tournament {
     this.knockoutGames.quarterfinals.forEach((pair) => {
       console.log(`${pair[0].name} - ${pair[1].name}`);
     });
+  }
+
+  // Creates a new game between two teams
+  createGame(team1, team2) {
+    return new Game(
+      { ...team1 }, // Creates a shallow copy of team1 to preserve all properties
+      { ...team2 } // including fibaRanking
+    );
+  }
+
+  // Simulates one round of the tournament
+  simulateRound(games) {
+    const winners = []; // List of winners
+    games.forEach((game) => {
+      game.play(); // Play the game
+      console.log(game.toString()); // Print the game result
+      // Determine the winner based on the score and add to winners list
+      winners.push(game.score1 > game.score2 ? game.team1 : game.team2);
+    });
+    return winners; // Return the list of winners
+  }
+
+  // Simulates the knockout stage of the tournament
+  simulateKnockoutStage() {
+    console.log("\nČetvrtfinale:");
+    // Create quarterfinal games based on predefined pairs
+    const quarterfinalGames = this.knockoutGames.quarterfinals.map((pair) =>
+      this.createGame(pair[0], pair[1])
+    );
+    const semifinals = this.simulateRound(quarterfinalGames); // Simulate quarterfinals
+
+    console.log("\nPolufinale:");
+    // Create semifinal games using the winners from the quarterfinals
+    const semifinalGames = [
+      this.createGame(semifinals[0], semifinals[1]),
+      this.createGame(semifinals[2], semifinals[3]),
+    ];
+    const finalists = this.simulateRound(semifinalGames); // Simulate semifinals
+
+    console.log("\nUtakmica za treće mesto:");
+    // Create and play the third place game between the semifinal losers
+    this.knockoutGames.bronzeGame = this.createGame(
+      semifinalGames[0].score1 > semifinalGames[0].score2
+        ? semifinalGames[0].team2
+        : semifinalGames[0].team1,
+      semifinalGames[1].score1 > semifinalGames[1].score2
+        ? semifinalGames[1].team2
+        : semifinalGames[1].team1
+    );
+    this.knockoutGames.bronzeGame.play(); // Play the bronze game
+    console.log(this.knockoutGames.bronzeGame.toString()); // Print the bronze game result
+
+    console.log("\nFinale:");
+    // Create and play the final game using the semifinal winners
+    this.knockoutGames.finalGame = this.createGame(finalists[0], finalists[1]);
+    this.knockoutGames.finalGame.play(); // Play the final game
+    console.log(this.knockoutGames.finalGame.toString()); // Print the final game result
+
+    this.displayMedalists(); // Display the medalists
+  }
+
+  // Displays the winners of the gold, silver, and bronze medals
+  displayMedalists() {
+    const goldWinner =
+      this.knockoutGames.finalGame.score1 > this.knockoutGames.finalGame.score2
+        ? this.knockoutGames.finalGame.team1
+        : this.knockoutGames.finalGame.team2; // Determine gold winner
+    const silverWinner =
+      goldWinner === this.knockoutGames.finalGame.team1
+        ? this.knockoutGames.finalGame.team2
+        : this.knockoutGames.finalGame.team1; // Determine silver winner
+    const bronzeWinner =
+      this.knockoutGames.bronzeGame.score1 >
+      this.knockoutGames.bronzeGame.score2
+        ? this.knockoutGames.bronzeGame.team1
+        : this.knockoutGames.bronzeGame.team2; // Determine bronze winner
+
+    console.log("\nMedalje:");
+    console.log(`1. ${goldWinner.name}`);
+    console.log(`2. ${silverWinner.name}`);
+    console.log(`3. ${bronzeWinner.name}`);
   }
 }
