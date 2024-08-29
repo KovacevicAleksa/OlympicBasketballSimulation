@@ -1,5 +1,6 @@
 import { Group } from "./Group.js";
 import { Team } from "./Team.js";
+import { shuffle } from "./utils.js";
 
 export class Tournament {
   constructor(groupsData) {
@@ -79,5 +80,49 @@ export class Tournament {
     this.qualifiedTeams.forEach((team, index) =>
       console.log(`${index + 1}. ${team.name}`)
     );
+  }
+
+  drawKnockoutStage() {
+    // Divide the qualified teams into 4 pots, each containing 2 teams
+    const pots = [
+      this.qualifiedTeams.slice(0, 2),
+      this.qualifiedTeams.slice(2, 4),
+      this.qualifiedTeams.slice(4, 6),
+      this.qualifiedTeams.slice(6, 8),
+    ];
+
+    // Log the contents of each pot
+    console.log("\nŠeširi:");
+    pots.forEach((pot, index) => {
+      console.log(`Šešir ${["D", "E", "F", "G"][index]}`);
+      pot.forEach((team) => console.log(`    ${team.name}`));
+    });
+
+    // Function to draw pairs by shuffling and pairing teams from two pots
+    const drawPairs = (pot1, pot2) => {
+      const pairs = [];
+      const shuffledPot1 = shuffle([...pot1]);
+      const shuffledPot2 = shuffle([...pot2]);
+      for (let i = 0; i < shuffledPot1.length; i++) {
+        pairs.push([shuffledPot1[i], shuffledPot2[i]]);
+      }
+      return pairs;
+    };
+
+    // Draw pairs for the upper half of the quarterfinals from pots 0 and 3
+    const quarterfinalsUpper = drawPairs(pots[0], pots[3]);
+    // Draw pairs for the lower half of the quarterfinals from pots 1 and 2
+    const quarterfinalsLower = drawPairs(pots[1], pots[2]);
+    // Combine the drawn pairs into the knockout games for quarterfinals.
+    this.knockoutGames.quarterfinals = [
+      ...quarterfinalsUpper,
+      ...quarterfinalsLower,
+    ];
+
+    // Log the quarterfinal matchups
+    console.log("\nEliminaciona faza:");
+    this.knockoutGames.quarterfinals.forEach((pair) => {
+      console.log(`${pair[0].name} - ${pair[1].name}`);
+    });
   }
 }

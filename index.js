@@ -12,6 +12,7 @@ async function main() {
     const tournament = new Tournament(groupsData);
 
     tournament.simulateGroupStage();
+    tournament.drawKnockoutStage();
   } catch (error) {
     console.error("Error:", error.message);
   }
