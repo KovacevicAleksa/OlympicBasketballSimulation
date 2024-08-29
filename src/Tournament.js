@@ -102,11 +102,32 @@ export class Tournament {
     // Function to draw pairs by shuffling and pairing teams from two pots
     const drawPairs = (pot1, pot2) => {
       const pairs = [];
+
+      // Shuffle both pots to ensure random pairing
       const shuffledPot1 = shuffle([...pot1]);
       const shuffledPot2 = shuffle([...pot2]);
+
+      // Iterate through each team in the first shuffled pot
       for (let i = 0; i < shuffledPot1.length; i++) {
-        pairs.push([shuffledPot1[i], shuffledPot2[i]]);
+        // Find an opponent from the second pot that is not in the same group
+        let opponent = shuffledPot2.find(
+          (team) => team.group !== shuffledPot1[i].group
+        );
+
+        // If no opponent from a different group is found, select a random opponent
+        if (!opponent) {
+          opponent =
+            shuffledPot2[Math.floor(Math.random() * shuffledPot2.length)];
+        }
+
+        // Add the pair of teams to the pairs array
+        pairs.push([shuffledPot1[i], opponent]);
+
+        // Remove the selected opponent from the second pot to avoid re-pairing
+        shuffledPot2.splice(shuffledPot2.indexOf(opponent), 1);
       }
+
+      // Return the list of pairs
       return pairs;
     };
 
