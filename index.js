@@ -7,10 +7,12 @@ async function main() {
   try {
     // Read and parse the JSON file
     const groupsData = await readJsonFile("groups.json");
+    const exibitionsData = await readJsonFile("exibitions.json");
 
     // Create Tournament instance
-    const tournament = new Tournament(groupsData);
+    const tournament = new Tournament(groupsData, exibitionsData);
 
+    //tournament.printAllInfo();
     tournament.simulateGroupStage();
     tournament.drawKnockoutStage();
     tournament.simulateKnockoutStage();

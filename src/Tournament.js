@@ -4,7 +4,7 @@ import { shuffle } from "./utils.js";
 import { Game } from "./Game.js";
 
 export class Tournament {
-  constructor(groupsData) {
+  constructor(groupsData, exhibitionsData) {
     // Initialize groups based on provided group data
     this.groups = Object.entries(groupsData).map(
       ([name, teams]) =>
@@ -13,12 +13,75 @@ export class Tournament {
           teams.map((t) => new Team(t.Team, t.ISOCode, t.FIBARanking))
         )
     );
+
+    // Initialize exhibitions based on provided exhibitions data
+    this.exhibitions = Object.entries(exhibitionsData).map(
+      ([team, matches]) => ({
+        team,
+        matches: matches.map((m) => ({
+          date: m.Date,
+          opponent: m.Opponent,
+          result: m.Result,
+        })),
+      })
+    );
+
     this.qualifiedTeams = []; // Array to hold teams qualified for knockout stage
     this.knockoutGames = {
       quarterfinals: [], // Array to store quarterfinal games
       semifinals: [], // Array to store semifinal games
+      final: null, // To store the final game
     };
+
+    this.calculateTeamForm();
   }
+
+  calculateTeamForm() {
+    // Create a map of ISO codes to team objects for quick lookup
+    const teamMap = new Map();
+    this.groups.forEach((group) => {
+      group.teams.forEach((team) => {
+        teamMap.set(team.isoCode, team); // Add each team to the map with its ISO code as the key
+      });
+    });
+
+    // Iterate over all exhibition matches
+    this.exhibitions.forEach(({ team, matches }) => {
+      let form = 0; // Initialize the form variable for the current team
+      matches.forEach(({ result }) => {
+        const [teamScore, opponentScore] = result.split("-").map(Number); // Parse the result string into scores
+        form += teamScore > opponentScore ? 2 : -2; // Update form based on whether the team won or lost
+      });
+
+      const foundTeam = teamMap.get(team);
+      if (foundTeam) {
+        foundTeam.form = form; // Update the team's form attribute with the calculated form
+      }
+    });
+  }
+
+  /*
+  printAllInfo() {
+    console.log("Group Information:");
+    this.groups.forEach((group) => {
+      console.log(`Group: ${group.name}`);
+      group.teams.forEach((team) => {
+        console.log(
+          `Team: ${team.name}, ISO Code: ${team.isoCode}, FIBA Ranking: ${team.fibaRanking}, Form: ${team.form}`
+        );
+      });
+      console.log("");
+    });
+
+    console.log("Exhibition Results:");
+    this.exhibitions.forEach(({ team, matches }) => {
+      console.log(`Team: ${team}`);
+      matches.forEach(({ date, opponent, result }) => {
+        console.log(`Date: ${date}, Opponent: ${opponent}, Result: ${result}`);
+      });
+      console.log("");
+    });
+  }*/
 
   // Simulate the group stage of the tournament
   simulateGroupStage() {

@@ -1,8 +1,9 @@
 export class Team {
-  constructor(name, isoCode, fibaRanking) {
+  constructor(name, isoCode, fibaRanking, form) {
     this.name = name;
     this.isoCode = isoCode;
     this.fibaRanking = fibaRanking;
+    this.form = form;
 
     // Initialize additional attributes for tracking team performance
     this.points = 0;

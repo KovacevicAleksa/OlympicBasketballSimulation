@@ -18,11 +18,11 @@ export async function readJsonFile(filename) {
   }
 }
 
-// Generates a random basketball score between 70 and 99, adding a bonus if the team is favored based on ranking difference.
-export function getRandomScore(isFavored, rankDiff) {
+// Generates a random basketball score between 70 and 99, adding a bonus if the team is favored based on ranking differencen and team form.
+export function getRandomScore(isFavored, rankDiff, teamForm) {
   const baseScore = 70 + Math.floor(Math.random() * 30);
   const bonus = isFavored ? Math.floor(rankDiff / 2) : 0;
-  return baseScore + bonus;
+  return baseScore + bonus + teamForm;
 }
 
 //Shuffles the elements of an array in place using the Fisher-Yates algorithm.

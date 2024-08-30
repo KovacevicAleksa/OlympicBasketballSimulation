@@ -20,8 +20,19 @@ export class Game {
     const underdogTeam = favoredTeam === this.team1 ? this.team2 : this.team1;
 
     // Generate random scores for both teams
-    this.score1 = getRandomScore(favoredTeam === this.team1, rankDiff);
-    this.score2 = getRandomScore(favoredTeam === this.team2, rankDiff);
+    this.score1 = getRandomScore(
+      favoredTeam === this.team1,
+      rankDiff,
+      this.team1.form
+    );
+    this.score2 = getRandomScore(
+      favoredTeam === this.team2,
+      rankDiff,
+      this.team2.form
+    );
+
+    //console.log(`${this.team2.name} ima formu ${this.team2.form} `);
+    //console.log(`${this.team1.name} ima formu ${this.team1.form} `);
 
     // Update the stats of the teams based on the scores
     this.updateTeamStats();
@@ -41,11 +52,15 @@ export class Game {
       this.team1.points += 2; // Award 2 points for a win
       this.team2.losses++; // Increase losses for team2
       this.team2.points += 1; // Award 1 point for a loss
+      this.team2.form -= 2; //Form --2
+      this.team1.form += 2; //Form ++2
     } else {
       this.team2.wins++;
       this.team2.points += 2;
       this.team1.losses++;
       this.team1.points += 1;
+      this.team2.form += 2;
+      this.team1.form -= 2;
     }
   }
 
