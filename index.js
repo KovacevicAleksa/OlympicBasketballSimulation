@@ -17,7 +17,21 @@ async function main() {
     tournament.drawKnockoutStage();
     tournament.simulateKnockoutStage();
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("An error occurred during tournament simulation:");
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+
+    if (error instanceof TypeError) {
+      console.error("This error might be due to incorrect data types.");
+    } else if (error instanceof SyntaxError) {
+      console.error(
+        "This error might be due to invalid JSON in the input files."
+      );
+    } else if (error instanceof ReferenceError) {
+      console.error(
+        "This error might be due to accessing undefined variables or functions."
+      );
+    }
   }
 }
 
