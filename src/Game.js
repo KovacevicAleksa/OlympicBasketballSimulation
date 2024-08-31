@@ -17,9 +17,15 @@ export class Game {
     // Determine which team is favored based on FIBA rankings
     const favoredTeam =
       this.team1.fibaRanking < this.team2.fibaRanking ? this.team1 : this.team2;
-    const underdogTeam = favoredTeam === this.team1 ? this.team2 : this.team1;
 
     // Generate random scores for both teams
+    this.calculateScores(rankDiff, favoredTeam);
+    //console.log(`${this.team2.name} ima formu ${this.team2.form} `);
+    //console.log(`${this.team1.name} ima formu ${this.team1.form} `);
+    this.updateTeamStats();
+  }
+
+  calculateScores(rankDiff, favoredTeam) {
     this.score1 = getRandomScore(
       favoredTeam === this.team1,
       rankDiff,
@@ -30,13 +36,9 @@ export class Game {
       rankDiff,
       this.team2.form
     );
-
-    //console.log(`${this.team2.name} ima formu ${this.team2.form} `);
-    //console.log(`${this.team1.name} ima formu ${this.team1.form} `);
-
-    // Update the stats of the teams based on the scores
-    this.updateTeamStats();
   }
+
+  // Update the stats of the teams based on the scores
 
   // Method to update the statistics of both teams based on the game result
   updateTeamStats() {
